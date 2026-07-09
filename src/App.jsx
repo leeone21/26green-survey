@@ -1,10 +1,11 @@
 import { AnimatePresence } from 'framer-motion';
-import { useSurvey } from './hooks/useSurvey';
+import { useSurvey, hasAlreadySubmitted } from './hooks/useSurvey';
 import IntroScreen from './components/IntroScreen';
 import QuestionScreen from './components/QuestionScreen';
 import OutroScreen from './components/OutroScreen';
 import ProgressBar from './components/ProgressBar';
 import SectionInterlude from './components/SectionInterlude';
+import AlreadyDone from './components/AlreadyDone';
 
 export default function App() {
   const {
@@ -24,6 +25,14 @@ export default function App() {
     interludeDone,
     isAnswered,
   } = useSurvey();
+
+  if (hasAlreadySubmitted()) {
+    return (
+      <div style={{ backgroundColor: '#0f0f0f', minHeight: '100dvh' }}>
+        <AlreadyDone />
+      </div>
+    );
+  }
 
   return (
     <div style={{ backgroundColor: '#0f0f0f', minHeight: '100dvh', position: 'relative' }}>

@@ -12,6 +12,10 @@ const SECTION_INTERLUDES = {
 const WEBHOOK_URL = import.meta.env.VITE_SHEETS_WEBHOOK_URL ||
   'https://script.google.com/macros/s/AKfycbwyjanq7zm4XIYZjCZY4juBijV5Ktqx4Lfs1AWlxCLfr3q4BFouqXVIIulAZXO7f1uH4w/exec';
 
+const STORAGE_KEY = 'greengym_survey_done';
+
+export const hasAlreadySubmitted = () => localStorage.getItem(STORAGE_KEY) === 'true';
+
 const submitSurvey = async (answers) => {
   try {
     await fetch(WEBHOOK_URL, {
@@ -20,6 +24,7 @@ const submitSurvey = async (answers) => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(answers),
     });
+    localStorage.setItem(STORAGE_KEY, 'true');
     return true;
   } catch (err) {
     console.error('제출 실패:', err);
