@@ -21,7 +21,7 @@ const submitSurvey = async (answers) => {
     await fetch(WEBHOOK_URL, {
       method: 'POST',
       mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'text/plain' },
       body: JSON.stringify(answers),
     });
     localStorage.setItem(STORAGE_KEY, 'true');
