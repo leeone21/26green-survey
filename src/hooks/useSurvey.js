@@ -9,9 +9,12 @@ const SECTION_INTERLUDES = {
   12: { title: '커리큘럼 선호', subtitle: '함께 만들어가는 그린짐' }, // Q13(idx12) → Q14(idx13)
 };
 
+const WEBHOOK_URL = import.meta.env.VITE_SHEETS_WEBHOOK_URL ||
+  'https://script.google.com/macros/s/AKfycbwyjanq7zm4XIYZjCZY4juBijV5Ktqx4Lfs1AWlxCLfr3q4BFouqXVIIulAZXO7f1uH4w/exec';
+
 const submitSurvey = async (answers) => {
   try {
-    await fetch(import.meta.env.VITE_SHEETS_WEBHOOK_URL, {
+    await fetch(WEBHOOK_URL, {
       method: 'POST',
       mode: 'no-cors',
       headers: { 'Content-Type': 'application/json' },
