@@ -26,7 +26,7 @@ export default function App() {
     isAnswered,
   } = useSurvey();
 
-  if (hasAlreadySubmitted()) {
+  if (hasAlreadySubmitted() && screen !== 'outro') {
     return (
       <div style={{ backgroundColor: '#0f0f0f', minHeight: '100dvh' }}>
         <AlreadyDone />
