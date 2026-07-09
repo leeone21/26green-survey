@@ -1,6 +1,14 @@
 import { useState, useCallback } from 'react';
 import { questions } from '../data/questions';
 
+// 섹션 전환 발생 시점: [이전 질문 인덱스] → 섹션 정보
+const SECTION_INTERLUDES = {
+  5: { title: '주말 운영', subtitle: '신설 검토 중입니다' },        // Q6(idx5) → Q7(idx6)
+  8: { title: '멤버십 정책', subtitle: '회원님의 의견이 반영됩니다' }, // Q9(idx8) → Q10(idx9)
+  10: { title: '스페셜 클래스', subtitle: '어떤 활동을 원하시나요?' }, // Q11(idx10) → Q12(idx11)
+  12: { title: '커리큘럼 선호', subtitle: '함께 만들어가는 그린짐' }, // Q13(idx12) → Q14(idx13)
+};
+
 const submitSurvey = async (answers) => {
   try {
     await fetch(import.meta.env.VITE_SHEETS_WEBHOOK_URL, {
@@ -17,11 +25,12 @@ const submitSurvey = async (answers) => {
 };
 
 export function useSurvey() {
-  const [screen, setScreen] = useState('intro'); // 'intro' | 'question' | 'outro'
+  const [screen, setScreen] = useState('intro'); // 'intro' | 'question' | 'interlude' | 'outro'
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [direction, setDirection] = useState(1); // 1 = forward, -1 = backward
+  const [direction, setDirection] = useState(1);
   const [answers, setAnswers] = useState({});
   const [submitting, setSubmitting] = useState(false);
+  const [interlude, setInterlude] = useState(null); // { title, subtitle }
 
   const currentQuestion = questions[currentIndex];
   const total = questions.length;
@@ -43,8 +52,15 @@ export function useSurvey() {
 
   const goNext = useCallback(async () => {
     if (currentIndex < total - 1) {
+      const nextIndex = currentIndex + 1;
+      const sectionChange = SECTION_INTERLUDES[currentIndex];
       setDirection(1);
-      setCurrentIndex((i) => i + 1);
+      if (sectionChange) {
+        setInterlude({ ...sectionChange, afterIndex: nextIndex });
+        setScreen('interlude');
+      } else {
+        setCurrentIndex(nextIndex);
+      }
     } else {
       setSubmitting(true);
       await submitSurvey(answers);
@@ -53,9 +69,17 @@ export function useSurvey() {
     }
   }, [currentIndex, total, answers]);
 
+  const interludeDone = useCallback(() => {
+    if (interlude) {
+      setCurrentIndex(interlude.afterIndex);
+      setInterlude(null);
+      setScreen('question');
+    }
+  }, [interlude]);
+
   const goPrev = useCallback(() => {
+    setDirection(-1);
     if (currentIndex > 0) {
-      setDirection(-1);
       setCurrentIndex((i) => i - 1);
     } else {
       setScreen('intro');
@@ -83,11 +107,13 @@ export function useSurvey() {
     total,
     answers,
     submitting,
+    interlude,
     setAnswer,
     toggleMulti,
     goNext,
     goPrev,
     startSurvey,
+    interludeDone,
     isAnswered,
   };
 }

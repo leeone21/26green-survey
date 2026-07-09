@@ -4,6 +4,7 @@ import IntroScreen from './components/IntroScreen';
 import QuestionScreen from './components/QuestionScreen';
 import OutroScreen from './components/OutroScreen';
 import ProgressBar from './components/ProgressBar';
+import SectionInterlude from './components/SectionInterlude';
 
 export default function App() {
   const {
@@ -14,40 +15,38 @@ export default function App() {
     total,
     answers,
     submitting,
+    interlude,
     setAnswer,
     toggleMulti,
     goNext,
     goPrev,
     startSurvey,
+    interludeDone,
     isAnswered,
   } = useSurvey();
 
   return (
     <div style={{ backgroundColor: '#0f0f0f', minHeight: '100dvh', position: 'relative' }}>
-      {screen === 'question' && (
+      {(screen === 'question' || screen === 'interlude') && (
         <ProgressBar current={currentIndex} total={total} />
-      )}
-
-      {screen === 'question' && (
-        <div
-          style={{
-            position: 'fixed',
-            top: '12px',
-            right: '24px',
-            fontSize: '0.75rem',
-            fontWeight: 500,
-            color: '#888888',
-            zIndex: 40,
-          }}
-        >
-          {String(currentIndex + 1).padStart(2, '0')} / {String(total).padStart(2, '0')}
-        </div>
       )}
 
       <AnimatePresence mode="wait" custom={direction}>
         {screen === 'intro' && (
           <IntroScreen key="intro" onStart={startSurvey} />
         )}
+
+        {screen === 'interlude' && interlude && (
+          <SectionInterlude
+            key={`interlude-${interlude.title}`}
+            sectionTitle={interlude.title}
+            sectionSubtitle={interlude.subtitle}
+            progress={currentIndex + 1}
+            total={total}
+            onComplete={interludeDone}
+          />
+        )}
+
         {screen === 'question' && currentQuestion && (
           <QuestionScreen
             key={currentQuestion.id}
@@ -65,6 +64,7 @@ export default function App() {
             submitting={submitting}
           />
         )}
+
         {screen === 'outro' && <OutroScreen key="outro" />}
       </AnimatePresence>
     </div>
