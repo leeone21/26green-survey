@@ -34,6 +34,10 @@ export default function App() {
     );
   }
 
+  const handleOpenFeedbackChange = (qId, value) => {
+    setAnswer(`${qId}_feedback`, value);
+  };
+
   return (
     <div style={{ backgroundColor: '#0f0f0f', minHeight: '100dvh', position: 'relative' }}>
       {(screen === 'question' || screen === 'interlude') && (
@@ -64,9 +68,11 @@ export default function App() {
             total={total}
             direction={direction}
             answer={answers[currentQuestion.id]}
+            openFeedbackAnswer={answers[`${currentQuestion.id}_feedback`]}
             onSingle={setAnswer}
             onMultiToggle={toggleMulti}
             onTextChange={setAnswer}
+            onOpenFeedbackChange={handleOpenFeedbackChange}
             onNext={goNext}
             onPrev={goPrev}
             canNext={isAnswered(currentQuestion)}
