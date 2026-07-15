@@ -223,8 +223,7 @@ export const questions = [
     id: 'q19',
     section: '자유 의견',
     text: '설문 결과를 바탕으로 개인 피드백을 드리고 싶어요.',
-    type: 'textarea',
+    type: 'contact',
     required: false,
-    placeholder: '성함과 연락처를 남겨주시면 따로 연락드릴게요 (선택)',
   },
 ];

@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { motion } from 'framer-motion';
 import ChoiceButton from './ChoiceButton';
 import Toast from './Toast';
@@ -8,6 +8,93 @@ const variants = {
   center: { y: 0, opacity: 1 },
   exit: (dir) => ({ y: dir > 0 ? -40 : 40, opacity: 0 }),
 };
+
+const inputStyle = {
+  width: '100%',
+  padding: '16px 20px',
+  borderRadius: '8px',
+  border: '1px solid #2a2a2a',
+  backgroundColor: '#1a1a1a',
+  color: '#ffffff',
+  fontSize: '1rem',
+  fontFamily: 'inherit',
+  outline: 'none',
+  transition: 'border-color 0.15s',
+  boxSizing: 'border-box',
+};
+
+function ContactInput({ answer, onChange }) {
+  const contact = answer || { name: '', phone1: '', phone2: '' };
+  const phone1Ref = useRef(null);
+  const phone2Ref = useRef(null);
+
+  const update = (field, value) => {
+    onChange({ ...contact, [field]: value });
+  };
+
+  const handlePhone1 = (e) => {
+    const val = e.target.value.replace(/\D/g, '').slice(0, 4);
+    update('phone1', val);
+    if (val.length === 4) phone2Ref.current?.focus();
+  };
+
+  const handlePhone2 = (e) => {
+    const val = e.target.value.replace(/\D/g, '').slice(0, 4);
+    update('phone2', val);
+  };
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+      {/* 이름 */}
+      <div>
+        <label style={{ display: 'block', fontSize: '0.8rem', color: '#888', marginBottom: '8px' }}>이름</label>
+        <input
+          type="text"
+          value={contact.name}
+          onChange={(e) => update('name', e.target.value)}
+          placeholder="홍길동"
+          style={inputStyle}
+          onFocus={(e) => (e.target.style.borderColor = '#b5f23d')}
+          onBlur={(e) => (e.target.style.borderColor = '#2a2a2a')}
+        />
+      </div>
+
+      {/* 전화번호 */}
+      <div>
+        <label style={{ display: 'block', fontSize: '0.8rem', color: '#888', marginBottom: '8px' }}>전화번호</label>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div style={{ ...inputStyle, width: 'auto', padding: '16px 14px', color: '#888', flexShrink: 0, cursor: 'default' }}>010</div>
+          <span style={{ color: '#555', fontSize: '1.2rem' }}>-</span>
+          <input
+            ref={phone1Ref}
+            type="tel"
+            inputMode="numeric"
+            value={contact.phone1}
+            onChange={handlePhone1}
+            placeholder="0000"
+            maxLength={4}
+            style={{ ...inputStyle, textAlign: 'center', flex: 1 }}
+            onFocus={(e) => (e.target.style.borderColor = '#b5f23d')}
+            onBlur={(e) => (e.target.style.borderColor = '#2a2a2a')}
+          />
+          <span style={{ color: '#555', fontSize: '1.2rem' }}>-</span>
+          <input
+            ref={phone2Ref}
+            type="tel"
+            inputMode="numeric"
+            value={contact.phone2}
+            onChange={handlePhone2}
+            placeholder="0000"
+            maxLength={4}
+            style={{ ...inputStyle, textAlign: 'center', flex: 1 }}
+            onFocus={(e) => (e.target.style.borderColor = '#b5f23d')}
+            onBlur={(e) => (e.target.style.borderColor = '#2a2a2a')}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function QuestionScreen({
   question,
@@ -42,7 +129,7 @@ export default function QuestionScreen({
 
   useEffect(() => {
     const handler = (e) => {
-      if (e.key === 'Enter' && question.type !== 'textarea' && canNext) {
+      if (e.key === 'Enter' && question.type !== 'textarea' && question.type !== 'contact' && canNext) {
         onNext();
       } else if (e.key === 'Backspace' && document.activeElement.tagName !== 'TEXTAREA' && document.activeElement.tagName !== 'INPUT') {
         onPrev();
@@ -152,21 +239,18 @@ export default function QuestionScreen({
               placeholder={question.placeholder}
               rows={5}
               style={{
-                width: '100%',
-                padding: '16px 20px',
-                borderRadius: '8px',
-                border: '1px solid #2a2a2a',
-                backgroundColor: '#1a1a1a',
-                color: '#ffffff',
-                fontSize: '1rem',
-                fontFamily: 'inherit',
-                outline: 'none',
-                transition: 'border-color 0.15s',
+                ...inputStyle,
                 resize: 'none',
-                boxSizing: 'border-box',
               }}
               onFocus={(e) => (e.target.style.borderColor = '#b5f23d')}
               onBlur={(e) => (e.target.style.borderColor = '#2a2a2a')}
+            />
+          )}
+
+          {question.type === 'contact' && (
+            <ContactInput
+              answer={answer}
+              onChange={(val) => onTextChange(question.id, val)}
             />
           )}
         </div>
@@ -201,7 +285,7 @@ export default function QuestionScreen({
 
         {/* Navigation */}
         <div style={{ display: 'flex', gap: '12px' }}>
-          {(question.type === 'multi' || question.type === 'textarea' || question.openFeedback || isLast) && (
+          {(question.type === 'multi' || question.type === 'textarea' || question.type === 'contact' || question.openFeedback || isLast) && (
             <button
               onClick={onNext}
               disabled={!canNext || submitting}
