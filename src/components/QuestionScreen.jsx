@@ -23,35 +23,44 @@ const inputStyle = {
   boxSizing: 'border-box',
 };
 
-function ContactInput({ answer, onChange }) {
-  const contact = answer || { name: '', phone1: '', phone2: '' };
+function ContactInput({ onChange }) {
+  const [name, setName] = useState('');
+  const [phone1, setPhone1] = useState('');
+  const [phone2, setPhone2] = useState('');
   const phone1Ref = useRef(null);
   const phone2Ref = useRef(null);
 
-  const update = (field, value) => {
-    onChange({ ...contact, [field]: value });
+  const notify = (n, p1, p2) => {
+    const phone = p1 || p2 ? `010-${p1}-${p2}` : '';
+    onChange(`${n} / ${phone}`.trim().replace(/\s*\/\s*$/, ''));
+  };
+
+  const handleName = (e) => {
+    setName(e.target.value);
+    notify(e.target.value, phone1, phone2);
   };
 
   const handlePhone1 = (e) => {
     const val = e.target.value.replace(/\D/g, '').slice(0, 4);
-    update('phone1', val);
+    setPhone1(val);
+    notify(name, val, phone2);
     if (val.length === 4) phone2Ref.current?.focus();
   };
 
   const handlePhone2 = (e) => {
     const val = e.target.value.replace(/\D/g, '').slice(0, 4);
-    update('phone2', val);
+    setPhone2(val);
+    notify(name, phone1, val);
   };
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-      {/* 이름 */}
       <div>
         <label style={{ display: 'block', fontSize: '0.8rem', color: '#888', marginBottom: '8px' }}>이름</label>
         <input
           type="text"
-          value={contact.name}
-          onChange={(e) => update('name', e.target.value)}
+          value={name}
+          onChange={handleName}
           placeholder="홍길동"
           style={inputStyle}
           onFocus={(e) => (e.target.style.borderColor = '#b5f23d')}
@@ -59,7 +68,6 @@ function ContactInput({ answer, onChange }) {
         />
       </div>
 
-      {/* 전화번호 */}
       <div>
         <label style={{ display: 'block', fontSize: '0.8rem', color: '#888', marginBottom: '8px' }}>전화번호</label>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -69,7 +77,7 @@ function ContactInput({ answer, onChange }) {
             ref={phone1Ref}
             type="tel"
             inputMode="numeric"
-            value={contact.phone1}
+            value={phone1}
             onChange={handlePhone1}
             placeholder="0000"
             maxLength={4}
@@ -82,7 +90,7 @@ function ContactInput({ answer, onChange }) {
             ref={phone2Ref}
             type="tel"
             inputMode="numeric"
-            value={contact.phone2}
+            value={phone2}
             onChange={handlePhone2}
             placeholder="0000"
             maxLength={4}
@@ -168,67 +176,27 @@ export default function QuestionScreen({
           width: '100%',
         }}
       >
-        {/* Section label */}
         <div style={{ marginBottom: '12px' }}>
-          <span
-            style={{
-              fontSize: '0.75rem',
-              fontWeight: 500,
-              color: '#b5f23d',
-              letterSpacing: '0.1em',
-              textTransform: 'uppercase',
-            }}
-          >
+          <span style={{ fontSize: '0.75rem', fontWeight: 500, color: '#b5f23d', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
             {question.section}
           </span>
         </div>
 
-        {/* Question text */}
-        <h2
-          style={{
-            fontSize: 'clamp(1.75rem, 5vw, 2.25rem)',
-            fontWeight: 700,
-            lineHeight: 1.3,
-            marginBottom: '32px',
-            color: '#ffffff',
-          }}
-        >
+        <h2 style={{ fontSize: 'clamp(1.75rem, 5vw, 2.25rem)', fontWeight: 700, lineHeight: 1.3, marginBottom: '32px', color: '#ffffff' }}>
           {question.text}
         </h2>
 
-        {/* Options */}
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '10px',
-            marginBottom: question.openFeedback ? '16px' : '40px',
-            overflowY: 'auto',
-            maxHeight: 'calc(100dvh - 320px)',
-            paddingRight: '2px',
-          }}
-        >
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: question.openFeedback ? '16px' : '40px', overflowY: 'auto', maxHeight: 'calc(100dvh - 320px)', paddingRight: '2px' }}>
           {question.type === 'single' &&
             question.options.map((opt) => (
-              <ChoiceButton
-                key={opt}
-                label={opt}
-                selected={answer === opt}
-                onClick={() => handleSingle(opt)}
-              />
+              <ChoiceButton key={opt} label={opt} selected={answer === opt} onClick={() => handleSingle(opt)} />
             ))}
 
           {question.type === 'multi' &&
             question.options.map((opt) => {
               const selected = Array.isArray(answer) && answer.includes(opt);
               return (
-                <ChoiceButton
-                  key={opt}
-                  label={opt}
-                  selected={selected}
-                  shake={shakeId === opt}
-                  onClick={() => handleMultiToggle(question.id, opt, question.maxSelect)}
-                />
+                <ChoiceButton key={opt} label={opt} selected={selected} shake={shakeId === opt} onClick={() => handleMultiToggle(question.id, opt, question.maxSelect)} />
               );
             })}
 
@@ -238,24 +206,17 @@ export default function QuestionScreen({
               onChange={(e) => onTextChange(question.id, e.target.value)}
               placeholder={question.placeholder}
               rows={5}
-              style={{
-                ...inputStyle,
-                resize: 'none',
-              }}
+              style={{ ...inputStyle, resize: 'none' }}
               onFocus={(e) => (e.target.style.borderColor = '#b5f23d')}
               onBlur={(e) => (e.target.style.borderColor = '#2a2a2a')}
             />
           )}
 
           {question.type === 'contact' && (
-            <ContactInput
-              answer={answer}
-              onChange={(val) => onTextChange(question.id, val)}
-            />
+            <ContactInput onChange={(val) => onTextChange(question.id, val)} />
           )}
         </div>
 
-        {/* Open feedback textarea */}
         {question.openFeedback && (
           <div style={{ marginBottom: '40px' }}>
             <textarea
@@ -263,78 +224,30 @@ export default function QuestionScreen({
               onChange={(e) => onOpenFeedbackChange(question.id, e.target.value)}
               placeholder={question.openFeedbackPlaceholder || '추가 의견이 있다면 자유롭게 적어주세요 (선택)'}
               rows={3}
-              style={{
-                width: '100%',
-                padding: '14px 18px',
-                borderRadius: '8px',
-                border: '1px solid #2a2a2a',
-                backgroundColor: '#141414',
-                color: '#ffffff',
-                fontSize: '0.9rem',
-                fontFamily: 'inherit',
-                outline: 'none',
-                transition: 'border-color 0.15s',
-                resize: 'none',
-                boxSizing: 'border-box',
-              }}
+              style={{ width: '100%', padding: '14px 18px', borderRadius: '8px', border: '1px solid #2a2a2a', backgroundColor: '#141414', color: '#ffffff', fontSize: '0.9rem', fontFamily: 'inherit', outline: 'none', transition: 'border-color 0.15s', resize: 'none', boxSizing: 'border-box' }}
               onFocus={(e) => (e.target.style.borderColor = '#b5f23d')}
               onBlur={(e) => (e.target.style.borderColor = '#2a2a2a')}
             />
           </div>
         )}
 
-        {/* Navigation */}
         <div style={{ display: 'flex', gap: '12px' }}>
           {(question.type === 'multi' || question.type === 'textarea' || question.type === 'contact' || question.openFeedback || isLast) && (
             <button
               onClick={onNext}
               disabled={!canNext || submitting}
-              style={{
-                flex: 1,
-                padding: '16px',
-                minHeight: '56px',
-                borderRadius: '8px',
-                border: 'none',
-                backgroundColor: canNext && !submitting ? '#b5f23d' : '#2a2a2a',
-                color: canNext && !submitting ? '#0f0f0f' : '#888888',
-                fontSize: '1rem',
-                fontWeight: 700,
-                fontFamily: 'inherit',
-                cursor: canNext && !submitting ? 'pointer' : 'not-allowed',
-                transition: 'all 0.15s',
-              }}
-              onMouseEnter={(e) => {
-                if (canNext && !submitting) e.currentTarget.style.backgroundColor = '#c8ff4f';
-              }}
-              onMouseLeave={(e) => {
-                if (canNext && !submitting) e.currentTarget.style.backgroundColor = '#b5f23d';
-              }}
+              style={{ flex: 1, padding: '16px', minHeight: '56px', borderRadius: '8px', border: 'none', backgroundColor: canNext && !submitting ? '#b5f23d' : '#2a2a2a', color: canNext && !submitting ? '#0f0f0f' : '#888888', fontSize: '1rem', fontWeight: 700, fontFamily: 'inherit', cursor: canNext && !submitting ? 'pointer' : 'not-allowed', transition: 'all 0.15s' }}
+              onMouseEnter={(e) => { if (canNext && !submitting) e.currentTarget.style.backgroundColor = '#c8ff4f'; }}
+              onMouseLeave={(e) => { if (canNext && !submitting) e.currentTarget.style.backgroundColor = '#b5f23d'; }}
             >
               {submitting ? '제출 중...' : isLast ? '제출하기 →' : '다음 →'}
             </button>
           )}
           <button
             onClick={onPrev}
-            style={{
-              padding: '16px 20px',
-              minHeight: '56px',
-              borderRadius: '8px',
-              border: '1px solid #2a2a2a',
-              backgroundColor: 'transparent',
-              color: '#888888',
-              fontSize: '1rem',
-              fontFamily: 'inherit',
-              cursor: 'pointer',
-              transition: 'all 0.15s',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = '#b5f23d';
-              e.currentTarget.style.color = '#ffffff';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.borderColor = '#2a2a2a';
-              e.currentTarget.style.color = '#888888';
-            }}
+            style={{ padding: '16px 20px', minHeight: '56px', borderRadius: '8px', border: '1px solid #2a2a2a', backgroundColor: 'transparent', color: '#888888', fontSize: '1rem', fontFamily: 'inherit', cursor: 'pointer', transition: 'all 0.15s' }}
+            onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#b5f23d'; e.currentTarget.style.color = '#ffffff'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.borderColor = '#2a2a2a'; e.currentTarget.style.color = '#888888'; }}
           >
             ← 이전
           </button>
