@@ -39,6 +39,8 @@ export const questions = [
       '스트레스 해소',
       '커뮤니티·함께하는 재미',
     ],
+    openFeedback: true,
+    openFeedbackPlaceholder: '선택지에 없는 목표가 있다면 적어주세요 (선택)',
   },
   {
     id: 'q5',
@@ -62,6 +64,8 @@ export const questions = [
       '저녁 18~21시',
       '밤 21시 이후',
     ],
+    openFeedback: true,
+    openFeedbackPlaceholder: '특정 시간을 원하는 이유나 추가 의견이 있다면 적어주세요 (선택)',
   },
   {
     id: 'q7',
@@ -75,6 +79,8 @@ export const questions = [
       '주말은 쉬고 싶어 평일만 이용',
       '주말에 하더라도 일요일이 더 좋다',
     ],
+    openFeedback: true,
+    openFeedbackPlaceholder: '주말 수업에 바라는 점이 있다면 적어주세요 (선택)',
   },
   {
     id: 'q8',
@@ -114,6 +120,8 @@ export const questions = [
       '좋지만 등록 결정엔 큰 영향 없음',
       '어차피 주말엔 안 나올 것 같다',
     ],
+    openFeedback: true,
+    openFeedbackPlaceholder: '멤버십 관련 의견이 있다면 적어주세요 (선택)',
   },
   {
     id: 'q11',
@@ -144,6 +152,8 @@ export const questions = [
       '소셜 이벤트 (챌린지·시즌 파티)',
       '워크숍 (영양·회복 교육)',
     ],
+    openFeedback: true,
+    openFeedbackPlaceholder: '원하는 다른 활동이 있다면 적어주세요 (선택)',
   },
   {
     id: 'q13',
@@ -170,6 +180,8 @@ export const questions = [
       'HYBRID (대회 스타일 기능성)',
       'WOD·게임 (팀·파트너 재미)',
     ],
+    openFeedback: true,
+    openFeedbackPlaceholder: '원하는 다른 컨셉이나 수업 아이디어가 있다면 적어주세요 (선택)',
   },
   {
     id: 'q15',

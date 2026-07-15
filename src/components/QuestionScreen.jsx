@@ -15,9 +15,11 @@ export default function QuestionScreen({
   total,
   direction,
   answer,
+  openFeedbackAnswer,
   onSingle,
   onMultiToggle,
   onTextChange,
+  onOpenFeedbackChange,
   onNext,
   onPrev,
   canNext,
@@ -52,7 +54,7 @@ export default function QuestionScreen({
 
   const handleSingle = (option) => {
     onSingle(question.id, option);
-    if (!isLast) {
+    if (!isLast && !question.openFeedback) {
       setTimeout(() => onNext(), 300);
     }
   };
@@ -113,7 +115,7 @@ export default function QuestionScreen({
             display: 'flex',
             flexDirection: 'column',
             gap: '10px',
-            marginBottom: '40px',
+            marginBottom: question.openFeedback ? '16px' : '40px',
             overflowY: 'auto',
             maxHeight: 'calc(100dvh - 320px)',
             paddingRight: '2px',
@@ -160,6 +162,8 @@ export default function QuestionScreen({
                 fontFamily: 'inherit',
                 outline: 'none',
                 transition: 'border-color 0.15s',
+                resize: 'none',
+                boxSizing: 'border-box',
               }}
               onFocus={(e) => (e.target.style.borderColor = '#b5f23d')}
               onBlur={(e) => (e.target.style.borderColor = '#2a2a2a')}
@@ -167,9 +171,37 @@ export default function QuestionScreen({
           )}
         </div>
 
+        {/* Open feedback textarea */}
+        {question.openFeedback && (
+          <div style={{ marginBottom: '40px' }}>
+            <textarea
+              value={openFeedbackAnswer || ''}
+              onChange={(e) => onOpenFeedbackChange(question.id, e.target.value)}
+              placeholder={question.openFeedbackPlaceholder || '추가 의견이 있다면 자유롭게 적어주세요 (선택)'}
+              rows={3}
+              style={{
+                width: '100%',
+                padding: '14px 18px',
+                borderRadius: '8px',
+                border: '1px solid #2a2a2a',
+                backgroundColor: '#141414',
+                color: '#ffffff',
+                fontSize: '0.9rem',
+                fontFamily: 'inherit',
+                outline: 'none',
+                transition: 'border-color 0.15s',
+                resize: 'none',
+                boxSizing: 'border-box',
+              }}
+              onFocus={(e) => (e.target.style.borderColor = '#b5f23d')}
+              onBlur={(e) => (e.target.style.borderColor = '#2a2a2a')}
+            />
+          </div>
+        )}
+
         {/* Navigation */}
         <div style={{ display: 'flex', gap: '12px' }}>
-          {(question.type === 'multi' || question.type === 'textarea' || isLast) && (
+          {(question.type === 'multi' || question.type === 'textarea' || question.openFeedback || isLast) && (
             <button
               onClick={onNext}
               disabled={!canNext || submitting}
