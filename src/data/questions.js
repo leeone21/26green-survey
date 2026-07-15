@@ -91,7 +91,7 @@ export const questions = [
     options: [
       '평일과 같은 정규 클래스',
       '가볍게 몸 푸는 회복·모빌리티',
-      '대회 대비 보강 훈련',
+      '대회 대비 보강 훈련 (하이록스·렉스트림 등)',
       '야외·특별 활동',
     ],
   },
@@ -102,10 +102,10 @@ export const questions = [
     type: 'single',
     required: true,
     options: [
-      '오전 이른 시간',
-      '오전 늦게',
-      '점심',
-      '오후',
+      '오전 7~9시',
+      '오전 9~11시',
+      '점심 11~13시',
+      '오후 13시 이후',
       '상관없음',
     ],
   },
@@ -118,7 +118,7 @@ export const questions = [
     options: [
       '매우 매력적 (재등록·상위권 전환 의향)',
       '좋지만 등록 결정엔 큰 영향 없음',
-      '어차피 주말엔 안 나올 것 같다',
+      '어차피 주말에 안 나올 것 같다',
     ],
     openFeedback: true,
     openFeedbackPlaceholder: '멤버십 관련 의견이 있다면 적어주세요 (선택)',
@@ -218,5 +218,13 @@ export const questions = [
     type: 'textarea',
     required: false,
     placeholder: '자유롭게 적어주세요 :)',
+  },
+  {
+    id: 'q19',
+    section: '자유 의견',
+    text: '설문 결과를 바탕으로 개인 피드백을 드리고 싶어요.',
+    type: 'textarea',
+    required: false,
+    placeholder: '성함과 연락처를 남겨주시면 따로 연락드릴게요 (선택)',
   },
 ];
