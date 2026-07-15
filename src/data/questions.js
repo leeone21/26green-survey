@@ -91,7 +91,7 @@ export const questions = [
     options: [
       '평일과 같은 정규 클래스',
       '가볍게 몸 푸는 회복·모빌리티',
-      '대회 대비 보강 훈련',
+      '대회 대비 보강 훈련 (하이록스·렉스트림 등)',
       '야외·특별 활동',
     ],
   },
@@ -218,5 +218,13 @@ export const questions = [
     type: 'textarea',
     required: false,
     placeholder: '자유롭게 적어주세요 :)',
+  },
+  {
+    id: 'q19',
+    section: '자유 의견',
+    text: '설문 결과를 바탕으로 개인 피드백을 드리고 싶어요.',
+    type: 'textarea',
+    required: false,
+    placeholder: '성함과 연락처를 남겨주시면 따로 연락드릴게요 (선택)',
   },
 ];
