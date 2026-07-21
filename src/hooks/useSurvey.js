@@ -3,10 +3,10 @@ import { questions } from '../data/questions';
 
 // 섹션 전환 발생 시점: [이전 질문 인덱스] → 섹션 정보
 const SECTION_INTERLUDES = {
-  5: { title: '주말 운영', subtitle: '신설 검토 중입니다' },        // Q6(idx5) → Q7(idx6)
-  8: { title: '멤버십 정책', subtitle: '회원님의 의견이 반영됩니다' }, // Q9(idx8) → Q10(idx9)
-  10: { title: '스페셜 클래스', subtitle: '어떤 활동을 원하시나요?' }, // Q11(idx10) → Q12(idx11)
-  12: { title: '커리큘럼 선호', subtitle: '함께 만들어가는 그린짐' }, // Q13(idx12) → Q14(idx13)
+  5:  { title: '커리큘럼 선호', subtitle: '함께 만들어가는 그린짐' },    // Q6(idx5)  → Q7(idx6)
+  9:  { title: '주말 운영', subtitle: '신설 검토 중입니다' },            // Q10(idx9) → Q11(idx10)
+  12: { title: '스페셜 클래스', subtitle: '어떤 활동을 원하시나요?' },   // Q13(idx12) → Q14(idx13)
+  14: { title: '자유 의견', subtitle: '솔직한 이야기를 들려주세요' },    // Q15(idx14) → Q16(idx15)
 };
 
 const WEBHOOK_URL = import.meta.env.VITE_SHEETS_WEBHOOK_URL ||
