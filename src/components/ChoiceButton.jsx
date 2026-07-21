@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-export default function ChoiceButton({ label, selected, onClick, shake }) {
+export default function ChoiceButton({ label, selected, onClick, shake, index }) {
   const [pressed, setPressed] = useState(false);
 
   return (
@@ -45,9 +45,9 @@ export default function ChoiceButton({ label, selected, onClick, shake }) {
         }
       }}
     >
-      {selected && (
-        <span style={{ flexShrink: 0, fontSize: '0.9rem', color: '#b5f23d' }}>✓</span>
-      )}
+      <span style={{ flexShrink: 0, fontSize: '0.85rem', color: selected ? '#b5f23d' : '#666', minWidth: '20px' }}>
+        {selected ? '✓' : `${index + 1}.`}
+      </span>
       <span>{label}</span>
     </button>
   );

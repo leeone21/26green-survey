@@ -188,15 +188,15 @@ export default function QuestionScreen({
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: question.openFeedback ? '16px' : '40px', overflowY: 'auto', maxHeight: 'calc(100dvh - 320px)', paddingRight: '2px' }}>
           {question.type === 'single' &&
-            question.options.map((opt) => (
-              <ChoiceButton key={opt} label={opt} selected={answer === opt} onClick={() => handleSingle(opt)} />
+            question.options.map((opt, i) => (
+              <ChoiceButton key={opt} index={i} label={opt} selected={answer === opt} onClick={() => handleSingle(opt)} />
             ))}
 
           {question.type === 'multi' &&
-            question.options.map((opt) => {
+            question.options.map((opt, i) => {
               const selected = Array.isArray(answer) && answer.includes(opt);
               return (
-                <ChoiceButton key={opt} label={opt} selected={selected} shake={shakeId === opt} onClick={() => handleMultiToggle(question.id, opt, question.maxSelect)} />
+                <ChoiceButton key={opt} index={i} label={opt} selected={selected} shake={shakeId === opt} onClick={() => handleMultiToggle(question.id, opt, question.maxSelect)} />
               );
             })}
 
