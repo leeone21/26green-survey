@@ -38,6 +38,7 @@ export const questions = [
       '기능적인 건강한 몸·부상 예방',
       '스트레스 해소',
       '커뮤니티·함께하는 재미',
+      '운동 습관 만들기',
     ],
     openFeedback: true,
     openFeedbackPlaceholder: '선택지에 없는 목표가 있다면 적어주세요 (선택)',

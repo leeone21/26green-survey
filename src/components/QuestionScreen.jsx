@@ -71,7 +71,7 @@ function ContactInput({ onChange }) {
       <div>
         <label style={{ display: 'block', fontSize: '0.8rem', color: '#888', marginBottom: '8px' }}>전화번호</label>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <div style={{ ...inputStyle, width: 'auto', padding: '16px 14px', color: '#888', flexShrink: 0, cursor: 'default' }}>010</div>
+          <span style={{ color: '#ccc', fontSize: '1rem', flexShrink: 0, padding: '0 4px' }}>010</span>
           <span style={{ color: '#555', fontSize: '1.2rem' }}>-</span>
           <input
             ref={phone1Ref}
